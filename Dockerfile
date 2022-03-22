@@ -11,7 +11,6 @@ RUN set -ex \
   && update-ca-certificates \
   && chmod +x /root/update-chinalist.sh \
   && /root/update-chinalist.sh \
-  && crontab -l 0 14 */2 * * /root/update-chinalist.sh \
   && wget https://github.com/leiless/dnsredir/releases/latest/download/coredns-dnsredir-linux-amd64.zip \
   && unzip coredns-dnsredir-linux-amd64.zip \
   && apk del unzip \
