@@ -1,0 +1,60 @@
+# https://coredns.io/plugins/cache/
+(global_cache) {
+    cache {
+        # [5, 60]
+        success 65536 3600 300
+        # [1, 10]
+        denial 8192 600 60
+        prefetch 1 60m 10%
+    }
+}
+
+.:5301  {
+  ads {
+      default-lists
+      blacklist https://raw.githubusercontent.com/privacy-protection-tools/anti-AD/master/anti-ad-domains.txt
+      whitelist https://files.krnl.eu/whitelist.txt
+      log
+      auto-update-interval 24h
+      list-store ads-cache
+  }
+  errors
+  hosts {
+    fallthrough
+  }
+  health
+  prometheus :9153
+
+  import global_cache
+
+  template ANY AAAA {
+      rcode NXDOMAIN
+  }
+
+  dnsredir accelerated-domains.china.conf google.china.conf apple.china.conf mydns.conf {
+      expire 15s
+      max_fails 3
+      health_check 3s
+      policy round_robin
+      path_reload 2s
+
+      to 119.29.29.29 223.5.5.5 114.114.114.114
+  }
+
+  dnsredir . {
+      expire 60s
+      max_fails 5
+      health_check 5s
+      policy random
+      spray
+
+      to tls://8.8.8.8@dns.google tls://8.8.4.4@dns.google
+      to tls://1.1.1.1@1dot1dot1dot1.cloudflare-dns.com tls://1.0.0.1@1dot1dot1dot1.cloudflare-dns.com
+      # Global TLS server name
+      # tls_servername cloudflare-dns.com
+  }
+
+  log
+  loop
+  reload 6s
+}
