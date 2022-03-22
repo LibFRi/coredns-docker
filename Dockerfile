@@ -7,9 +7,9 @@ COPY update-chinalist.sh /etc/coredns/update-chinalist.sh
 COPY Corefile /etc/coredns/Corefile
 
 RUN set -ex \
-	&& apk add --no-cache unzip update-ca-certificates ca-certificates bind-tools dumb-init \
-  $$ chmod +x /etc/coredns/update-chinalist.sh \
-	&& wget https://github.com/leiless/dnsredir/releases/latest/download/coredns-dnsredir-linux-amd64.zip \
+  && apk add --no-cache unzip update-ca-certificates ca-certificates bind-tools dumb-init \
+  && chmod +x /etc/coredns/update-chinalist.sh \
+  && wget https://github.com/leiless/dnsredir/releases/latest/download/coredns-dnsredir-linux-amd64.zip \
   && unzip coredns-dnsredir-linux-amd64.zip \
   && apk del unzip \
   && mv coredns-dnsredir-linux-amd64 /usr/local/bin/coredns \
